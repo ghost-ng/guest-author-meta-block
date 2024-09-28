@@ -26,7 +26,7 @@ This plugin allows WordPress users to easily assign a guest author to posts usin
 
 ### Automatic Installation
 
-1. In your WordPress dashboard, go to **Plugins** > **Add New**.
+1. In your WordPress dashboard, go to **Plugins** > **Add New**.  (not yet in the plugin directory)
 2. Search for "Guest Author Meta Block."
 3. Click **Install Now**, then **Activate**.
 
