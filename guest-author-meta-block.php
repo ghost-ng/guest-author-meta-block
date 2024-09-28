@@ -44,7 +44,6 @@ function gam_guest_author_meta_box_html($post) {
     // Retrieve the value from the post meta.
     $guest_authors = get_post_meta($post->ID, '_guest_author_name', true);
     ?>
-    <label for="guest_author_field">Guest Author(s)</label>
     <input type="text" id="guest_author_field" name="guest_author_field" value="<?php echo esc_attr($guest_authors); ?>" placeholder="Enter guest author name(s)" style="width:100%;">
     <?php
 }
