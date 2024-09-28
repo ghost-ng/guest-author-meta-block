@@ -45,44 +45,47 @@ add_action('add_meta_boxes', 'gam_add_guest_author_meta_box');
 function gam_guest_author_meta_box_html($post) {
     // Retrieve the value from the post meta.
     $guest_authors = get_post_meta($post->ID, '_guest_author_name', true);
+    
+    // Output the nonce field
+    wp_nonce_field('guest_author_meta_box', 'guest_author_meta_box_nonce');
+    
     ?>
+    <label for="guest_author_field">Guest Author(s)</label>
     <input type="text" id="guest_author_field" name="guest_author_field" value="<?php echo esc_attr($guest_authors); ?>" placeholder="Enter guest author name(s)" style="width:100%;">
     <?php
 }
 
+
 // Save the meta box data when the post is saved.
-function save_guest_author_meta_box($post_id) {
-    // Verify nonce for security
-    if ( ! isset( $_POST['guest_author_meta_box_nonce'] ) ) {
-        return $post_id; // Exit if nonce is not set
+function gam_save_guest_author_meta_box($post_id) {
+    // Check if the nonce field is present in the POST data.
+    if (!isset($_POST['guest_author_meta_box_nonce'])) {
+        return; // If nonce is missing, exit the function.
     }
 
-    // Unslash and sanitize the nonce before verification
+    // Verify the nonce to ensure the request is valid.
     $nonce = sanitize_text_field( wp_unslash( $_POST['guest_author_meta_box_nonce'] ) );
-
-    // Verify the nonce
-    if ( ! wp_verify_nonce( $nonce, 'save_guest_author_meta_box' ) ) {
-        return $post_id; // Exit if nonce verification fails
+    if (!wp_verify_nonce(wp_unslash($nonce), 'guest_author_meta_box')) {
+        return; // If nonce verification fails, exit the function.
     }
 
-    // Verify autosave is not being used.
+    // Prevent the meta from being saved on autosaves.
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-        return $post_id;
+        return;
     }
 
-    // Verify user has permission to edit post.
+    // Check if the user has permission to edit the post.
     if (!current_user_can('edit_post', $post_id)) {
-        return $post_id;
+        return;
     }
 
-    // Save the guest author field.
+    // Ensure the guest author field is set before saving.
     if (isset($_POST['guest_author_field'])) {
-        // Unslash before sanitizing the input
-        $guest_author_name = sanitize_text_field( wp_unslash( $_POST['guest_author_field'] ) );
-        update_post_meta($post_id, '_guest_author_name', $guest_author_name);
+        // Sanitize the input and update the post meta.
+        update_post_meta($post_id, '_guest_author_name', sanitize_text_field(wp_unslash($_POST['guest_author_field']));
     }
 }
-add_action('save_post', 'save_guest_author_meta_box');
+add_action('save_post', 'gam_save_guest_author_meta_box');
 
 
 // Enqueue the Gutenberg block's JavaScript for the block editor.
