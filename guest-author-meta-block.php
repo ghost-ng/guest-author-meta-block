@@ -2,9 +2,11 @@
 /**
  * Plugin Name: Guest Author Meta Block
  * Description: A plugin that adds a "Guest Author(s)" meta box to the post editing sidebar and a Gutenberg block to display it.
- * Version: .75
+ * Version: 0.75
  * Author: <a href="https://github.com/ghost-ng/" target="_blank">ghost-ng</a>
  * Author URI: https://github.com/ghost-ng/
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 // Prevent direct access to the file.
@@ -49,23 +51,39 @@ function gam_guest_author_meta_box_html($post) {
 }
 
 // Save the meta box data when the post is saved.
-function gam_save_guest_author_meta_box($post_id) {
+function save_guest_author_meta_box($post_id) {
+    // Verify nonce for security
+    if ( ! isset( $_POST['guest_author_meta_box_nonce'] ) ) {
+        return $post_id; // Exit if nonce is not set
+    }
+
+    // Unslash and sanitize the nonce before verification
+    $nonce = sanitize_text_field( wp_unslash( $_POST['guest_author_meta_box_nonce'] ) );
+
+    // Verify the nonce
+    if ( ! wp_verify_nonce( $nonce, 'save_guest_author_meta_box' ) ) {
+        return $post_id; // Exit if nonce verification fails
+    }
+
     // Verify autosave is not being used.
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-        return;
+        return $post_id;
     }
 
     // Verify user has permission to edit post.
     if (!current_user_can('edit_post', $post_id)) {
-        return;
+        return $post_id;
     }
 
     // Save the guest author field.
     if (isset($_POST['guest_author_field'])) {
-        update_post_meta($post_id, '_guest_author_name', sanitize_text_field($_POST['guest_author_field']));
+        // Unslash before sanitizing the input
+        $guest_author_name = sanitize_text_field( wp_unslash( $_POST['guest_author_field'] ) );
+        update_post_meta($post_id, '_guest_author_name', $guest_author_name);
     }
 }
-add_action('save_post', 'gam_save_guest_author_meta_box');
+add_action('save_post', 'save_guest_author_meta_box');
+
 
 // Enqueue the Gutenberg block's JavaScript for the block editor.
 function gam_enqueue_block_editor_assets() {
