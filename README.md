@@ -5,7 +5,7 @@ A WordPress plugin that adds a "Guest Author(s)" meta box to the post editing si
 ## Plugin Information
 
 - **Version**: 0.75
-- **Author**: [ghost-ng](https://yourwebsite.com)
+- **Author**: [ghost-ng](https://github.com/ghost-ng/)
 - **Requires WordPress Version**: 5.0 or higher
 - **Tested up to**: 6.0
 - **License**: GPLv2 or later
