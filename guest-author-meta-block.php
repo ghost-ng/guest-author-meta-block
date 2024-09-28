@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Guest Author Meta Block
  * Description: A plugin that adds a "Guest Author(s)" meta box to the post editing sidebar and a Gutenberg block to display it.
- * Version: 0.75
+ * Version: 0.76
  * Author: <a href="https://github.com/ghost-ng/" target="_blank">ghost-ng</a>
  * Author URI: https://github.com/ghost-ng/
  * License: GPLv2 or later
